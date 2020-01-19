@@ -1,0 +1,1099 @@
+<!DOCTYPE html>
+<!-- saved from url=(0045)https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/ -->
+<html _manifest="receiver.appcache" class="large largeTiles web-browser is-hdpi">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title class="_ctxstxt_AppStore">Citrix Receiver</title>
+    <link rel="ICON" href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/receiver/images/common/favicon_9B19689CB70C681E.ico" sizes="16x16 32x32 48x48 64x64" type="image/vnd.microsoft.icon">
+    <link rel="SHORTCUT ICON" href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/receiver/images/common/favicon_9B19689CB70C681E.ico" sizes="16x16 32x32 48x48 64x64" type="image/vnd.microsoft.icon">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <!-- Allow app to use the full screen if it is launched from a web clip on the springboard -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+    <!-- This script block is to get the HTML5 elements to display correctly in older versions of IE that do not support them -->
+    <script>
+        document.createElement('header');
+        document.createElement('nav');
+        document.createElement('section');
+    </script>
+
+    <noscript>
+        <link href="receiver/css/ctxs.no-js-ui.min_6FDFFB8AB833BC68.css" rel="stylesheet" />
+    </noscript>
+
+    <script type="text/html" id="large-ui-styles">
+        <link href="receiver/css/ctxs.large-ui.min_62D11B01D15101DA.css" rel="stylesheet" />
+    </script>
+
+    <script type="text/html" id="medium-ui-styles">
+        <link href="receiver/css/ctxs.medium-ui.min_697CBEF8A8BB93A7.css" rel="stylesheet" />
+    </script>
+    <script type="text/html" id="small-ui-styles">
+        <link href="receiver/css/ctxs.small-ui.min_9B2AEE7496610A2C.css" rel="stylesheet" />
+    </script>
+
+    <script type="text/javascript">
+        // Calculates the minimum width that would be available to the web UI on this device
+        function calculateMinimumAvailableWidth(urlParams) {
+            var availableWidth, availableHeight,
+                deviceSupportsRotation = true,
+                screenWidthInUrl = urlParams.match(/screenwidth=(\d+)(&|$)/i),
+                screenHeightInUrl = urlParams.match(/screenheight=(\d+)(&|$)/i);
+
+            if (screenWidthInUrl && screenHeightInUrl) {
+                // Screen dimensions have been provided by the native client in the URL - use them
+                availableWidth = screenWidthInUrl[1];
+                availableHeight = screenHeightInUrl[1];
+            } else if (navigator.userAgent.match(/(Android)\s+([\d.]+)/) || navigator.userAgent.match(/(Windows Phone)/i)) {
+                // Android and Windows Phone give inconsistent screen dimensions - either physical pixels or CSS pixels depending on the device
+                // We can attempt to work out which dimensions we've got by comparing with window size
+                var screenWidth = window.screen.width,
+                    screenHeight = window.screen.height,
+                    windowWidth = document.documentElement.clientWidth,
+                    windowHeight = document.documentElement.clientHeight,
+                    pixelRatio = window.devicePixelRatio;
+
+                if (screenWidth == windowWidth) {
+                    // Screen dimensions seem to be provided in CSS pixels - use them
+                    availableWidth = screenWidth;
+                    availableHeight = screenHeight;
+                } else if (screenWidth == (windowWidth * pixelRatio)) {
+                    // Screen dimensions seem to be provided in physical pixels - convert to CSS pixels
+                    availableWidth = Math.floor(screenWidth / pixelRatio);
+                    availableHeight = Math.floor(screenHeight / pixelRatio);
+                } else {
+                    // No discernable relationship between screen and window dimensions - fall back to using window dimensions
+                    availableWidth = windowWidth;
+                    availableHeight = windowHeight;
+                }
+            } else if (navigator.userAgent.match(/(iPad|iPhone|iPod)/i)) {
+                // For iOS devices we assume that the web page could stretch to the full width of the screen
+                availableWidth = window.screen.width;
+                availableHeight = window.screen.height;
+            } else {
+                deviceSupportsRotation = false; // We assume that all other devices are desktops, and therefore that they are not capable of being rotated.
+                availableWidth = window.screen.availWidth;
+                availableHeight = window.screen.availHeight;
+            }
+
+            // Special overrides that a client may provide
+            if ((urlParams.indexOf("-norotate") != -1) || (urlParams.indexOf("-desktop") != -1)) {
+                deviceSupportsRotation = false;
+            }
+
+            // If rotation is possible then consider both dimensions, otherwise (e.g. for desktops) just look at the width
+            return deviceSupportsRotation ? Math.min(availableWidth, availableHeight) : availableWidth;
+        }
+
+        var uiSize,
+            query = window.location.search + window.location.hash,
+            MEDIUM_UI_MINIMUM_WIDTH = 600,
+            LARGE_UI_MINIMUM_WIDTH = 768; // Also defined in CSS to set minimum width of the page
+
+        // Note window.minimumAvailableWidth, window.useSmallUI and window.useSmallTiles are referenced in ctxs.ui.js
+
+        if (query.indexOf('-ph') != -1) {
+            window.minimumAvailableWidth = 100; // act as if on very small device
+        } else if (query.indexOf('-med') != -1) {
+            window.minimumAvailableWidth = 700; // act as if medium
+        } else if (query.indexOf('-lg') != -1) {
+            window.minimumAvailableWidth = 1000; // act as if large
+        } else {
+            // Use the screen size to decide which UI layout is most suitable for this device
+            window.minimumAvailableWidth = calculateMinimumAvailableWidth(query);
+        }
+
+        if (window.minimumAvailableWidth >= LARGE_UI_MINIMUM_WIDTH) {
+            // Large layout
+            window.useSmallUI = false;
+            window.useSmallTiles = false;
+            uisize = "large";
+        } else if (window.minimumAvailableWidth >= MEDIUM_UI_MINIMUM_WIDTH) {
+            // Small Tablet Layout
+            window.useSmallUI = true;
+            window.useSmallTiles = false;
+            uisize = "medium";
+        } else {
+            // Phone layout
+            window.useSmallUI = true;
+            window.useSmallTiles = true;
+            uisize = "small";
+        }
+
+        // load correct CSS and add marker classes 
+        document.write(document.getElementById(uisize + "-ui-styles").innerHTML);
+        document.documentElement.className += (window.useSmallUI ? "small" : "large") + (window.useSmallTiles ? " smallTiles" : " largeTiles");
+
+        if (query.indexOf('-nocustom') == -1) {
+            document.write('<link href="custom/style.css" rel="stylesheet" id="customStyle" />');
+        }
+    </script>
+    <link href="./StoreFront_files/ctxs.large-ui.min_62D11B01D15101DA.css" rel="stylesheet">
+    <link href="./StoreFront_files/style.css" rel="stylesheet" id="customStyle">
+    <style>
+        .theme-highlight-sprite {
+            background-image: url('data:image/png;base64,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');
+        }
+    </style>
+    <style>
+        .folder .storeapp-icon {
+            background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHgAAAB4CAYAAAA5ZDbSAAAFD0lEQVR4Xu3aT2icVRQF8HPfNLFibYvQhboWF7oQhCIKQhUFhQpWZ7TiCO5cqGCSqriQLusiiX+gFbvQVsU6WupGJRtLtIhWEUERiVmIWFCqYDQVnen3rkxCRGuQ0pkz95svZ9aZ8847v8yQTGLQo9ILWKVvp8tBwBX/JhCwgCu+QMWv9/+v4OdeuyS10+0O226GK+DYAuA84iYLADKAH93wg7nPG3C8MDuKscY88dzKRq8OPNW6NLntAfweAKkMtzfDx3BMF2P1Fsy8DJ2GocN/gGtPt27zAgcBbCrjBcxwvPDcxPjdc2XsV7ZO/wKuTR263z3tB1ArW9Ez+iya4b5irHGk5D3D6/0NvG7yjRszfGYIcFdGKwA8lMcb+8JXLHGBZeDpI5tT7nwF4OISd12tmsPwQB5rvDBkvQdWdwk4Tb7+FGCPDuzU/h7k5tYsJuqv9je2GmmGZ1/ZmDqjJwBsGOIrtVPGLad3Nd4b4jtQqlttutX0vPRT87A/FrKnazBx59fDfpF+9rc01ToIR7OfoYFZ8/lPXIsnGicDO5TqaEuTrS8AXFmqVr2UcXye27hZyMsjdoF/KeuHGj04f5dhOzFe/7CHjEo8tQtc1Y/9Mtyfz+tHnsSDO36uhNY5XKLKwCtzLAK+N6e8D4/s/PYcNhrqp6wF4BWg7MCswd/Kyd7HVVu+xLZtp4da7yzKryXgM+fo4nbfuk+dxU7l+RJHxxNOmPun2ewd/Fr/ALut+yfWVR9rGbg8aL01mTP33cV449Bqf0YVcG/jlubZDsy4n38vJrb/9M9SAi4NUR+KWP4mrxu5AQ/f8f1KmoD7sGvJIuZyB1vxeKP7709LH3RU9ffgku0+uDpueNPHGnUBD27zgZ9kbrcWE/V39Qoe+PSDOdDgnxTjd21dBq7VgAs2ACOj3TftwTTQKZwFPAOdNnBqEdk7V1t65rBj00WC5cwdl9qF/m1hr6X9M47R9XFFdDJvgU77pKWXjrrelnkbhya7u6UDs/o1KVSBe7iAufuGpws4nIBbQMDcfcPTBRxOwC0gYO6+4ekCDifgFhAwd9/wdAGHE3ALCJi7b3i6gMMJuAUEzN03PF3A4QTcAgLm7hueLuBwAm4BAXP3DU8XcDgBt4CAufuGpws4nIBbQMDcfcPTBRxOwC0gYO6+4ekCDifgFhAwd9/wdAGHE3ALCJi7b3i6gMMJuAUEzN03PF3A4QTcAgLm7hueLuBwAm4BAXP3DU8XcDgBt4CAufuGpws4nIBbQMDcfcPTBRxOwC0gYO6+4ekCDifgFhAwd9/wdAGHE3ALCJi7b3i6gMMJuAUEzN03PF3A4QTcAgLm7hueLuBwAm4BAXP3DU8XcDgBt4CAufuGpws4nIBbQMDcfcPTBRxOwC0gYO6+4ekCDifgFhAwd9/wdAGHE3ALCJi7b3i6gMMJuAUEzN03PF3A4QTcAgLm7hueLuBwAm4BAXP3DU8XcDgBt4CAufuGpws4nIBbQMDcfcPTBRxOwC0gYO6+4ekCDifgFhAwd9/wdAGHE3ALCJi7b3i6gMMJuAUEzN03PF3A4QTcAgLm7hueLuBwAm6BLvACgI3cY5QetMCi2YHZwwbsCCqgY4kLuOFtw8vHLk+5+AjAZuJZih78Ar/nnK+zpXNfnL3MEvYYcBOACwffRSf2cYE/HHbMEx5D8/rPloH1qOwCAq4s7fLFBCzgii9Q8evpFVxx4L8AfDq7+CoW1aAAAAAASUVORK5CYII=');
+        }
+    </style>
+    <style>
+        .view-sprite {
+            background-image: url('data:image/png;base64,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');
+        }
+    </style>
+    <style type="text/css">
+        .large .storeViewSection {
+            top: 124px;
+            bottom: 0px;
+        }
+        
+        .small .myapps-view .storeViewSection {
+            top: 92px;
+            bottom: 0px;
+        }
+        
+        .small .store-view .storeViewSection {
+            top: 137px;
+            bottom: 0px;
+        }
+        
+        .large .appinfo-view .appInfoView {
+            top: 172px;
+            bottom: 0px;
+        }
+        
+        .large .bundledetail-view .storeViewSection {
+            top: 172px;
+            bottom: 0px;
+        }
+        
+        .small .appinfo-view .appInfoView {
+            top: 136px;
+            bottom: 0px;
+        }
+        
+        .small .bundledetail-view .storeViewSection {
+            top: 136px;
+            bottom: 0px;
+        }
+    </style>
+    <style>
+        .storeapp-list .storeapp,
+        .storeapp-list .folder {
+            width: 270.25px;
+            margin-left: 42.25px;
+            padding-right: 42.25px;
+            padding-left: 0;
+            margin-right: 0
+        }
+        
+        .storeapp-list:not(.dragging)> :nth-child(4n+0) {
+            border-right: 0px;
+        }
+    </style>
+</head>
+
+<body class="zh-CN myapps-view" style="cursor: default;">
+    <noscript>
+        <!-- JavaScript is not enabled, text in this section cannot be localized using JavaScript -->
+        <div>
+            <section id="no-javascript-screen" class="no-javascript-view fullscreen-pane web-screen" style="display: block;">
+                <div class="vertical-center-outer">
+                    <div class="vertical-center-inner">
+                        <div class="content-area">
+                            <h1 class="no-javascript-message-title">JavaScript is required</h1>
+                            <p class="no-javascript-message-description">Please enable JavaScript in your browser before using Citrix Receiver.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </noscript>
+    <p id="recolor-actions" style="display: none;" class="theme-highlight-sprite theme-highlight-color"></p>
+    <div id="bundle-actions" style="display: none;" class="bundleDetail"></div>
+    <div class="folderTemplate" style="display:none;"></div>
+    <section id="loading-screen" class="loading-screen fullscreen-pane show-on-page-load" style="display: none;">
+        <div class="loading-message">
+            <div class="loading-logo"></div>
+            <img class="loading-spinner" src="./StoreFront_files/wspinner@2x_26FCB0A3548E30DC.gif">
+        </div>
+    </section>
+
+    <section id="about-screen-phone" class="about-view fullscreen-pane phone-only" style="display: none;">
+        <header class="about-header theme-header-bgcolor">
+            <a id="aboutphoneBackBtn" class="about-button-back _ctxsattr_aria-label_Back" href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/#" aria-label="后退">
+                <div class="backButton view-sprite"></div>
+            </a>
+            <span class="header-title theme-header-color phone-only _ctxstxt_About">关于</span>
+        </header>
+        <div class="aboutPhoneContent scrollable">
+            <div class="citrixReceiverLogoAboutBox"></div>
+            <div class="copyrightContainer">
+                <p class="thirdPartyNoticeHeader _ctxstxt_ThirdPartyNotices">第三方声明</p>
+                <a id="thirdPartyNoticesPhoneBtn" href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/ReceiverThirdPartyNotices.htm" class="thirdPartyNoticeLink _ctxstxt_ThirdPartyNoticesWeb" target="_blank">Citrix Receiver for Web</a>
+                <a id="html5ThirdPartyNoticesPhoneBtn" href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/clients/HTML5Client/src/ReceiverThirdPartyNotices.html" class="thirdPartyNoticeLink _ctxstxt_ThirdPartyNoticesHtml5" target="_blank">Citrix Receiver for HTML5</a>
+                <span class="citrixCopyright _ctxstxt_CitrixCopyright">© 2017 Citrix Systems, Inc.</span><br>
+                <span class="_ctxstxt_AllRightsReserved">保留所有权利。</span><br>
+                <a href="http://www.citrix.com/" class="citrixLink" target="_blank">www.citrix.com</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="home-screen" class="home-view fullscreen-pane" style="display: block;">
+        <nav class="phone-only side-menu theme-header-bgcolor">
+            <div class="side-menu-container">
+                <div class="logo-area">
+                    <div class="logo-container hdpi-capable"></div>
+                </div>
+
+                <div role="tablist">
+                    <a id="myAppsBtnPhone" role="tab" aria-selected="true" class="toggle-view-button myapps-view primary menu-action theme-header-color selected" href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/#">
+                        <div class="action-icon-container">
+                            <div class="action-icon view-sprite"></div>
+                        </div>
+                        <span class="action-text _ctxstxt_QuickAccess">收藏夹</span>
+                    </a>
+                    <a id="desktopsBtnPhone" role="tab" aria-selected="false" class="toggle-view-button desktops-view primary menu-action theme-header-color" href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/#">
+                        <div class="action-icon-container">
+                            <div class="action-icon view-sprite"></div>
+                        </div>
+                        <span class="action-text _ctxstxt_Desktops">桌面</span>
+                    </a>
+                    <a id="allAppsBtnPhone" role="tab" aria-selected="false" class="toggle-view-button store-view primary menu-action theme-header-color" href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/#" style="display: none;">
+                        <div class="action-icon-container">
+                            <div class="action-icon view-sprite"></div>
+                        </div>
+                        <span class="action-text _ctxstxt_AllApps">应用程序</span>
+                    </a>
+                </div>
+                <!-- <a class="toggle-view-button updates-view primary menu-action theme-header-color"><div class="action-icon-container"><div class="action-icon view-sprite"></div></div><span class="action-text _todo_ctxstxt_Update" data-updates=""></span></a>
+                -->
+
+                <div class="action-separator"></div>
+
+                <a href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/#" class="settings menu-action settings-button theme-header-color">
+                    <div class="action-icon-container">
+                        <div class="action-icon view-sprite"></div>
+                    </div>
+                    <span class="action-text _ctxstxt_Preferences">首选项</span>
+                </a>
+                <a href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/#" class="help menu-action help-button theme-header-color hide">
+                    <div class="action-icon-container">
+                        <div class="action-icon view-sprite"></div>
+                    </div>
+                    <span class="action-text _ctxstxt_Help">帮助</span>
+                </a>
+                <a href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/#" class="about menu-action about-button theme-header-color">
+                    <div class="action-icon-container">
+                        <div class="action-icon view-sprite"></div>
+                    </div>
+                    <span class="action-text _ctxstxt_About">关于</span>
+                </a>
+                <a href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/#" class="refresh menu-action refresh-button theme-header-color">
+                    <div class="action-icon-container">
+                        <div class="action-icon view-sprite"></div>
+                    </div>
+                    <span class="action-text _ctxstxt_Refresh">刷新</span>
+                </a>
+                <p class="user-display-name theme-header-color">longhsu91</p>
+                <a href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/#" class="logoff-button theme-header-color _ctxstxt_LogOff">注销</a>
+            </div>
+        </nav>
+
+        <div class="side-menu-content-overlay overlay"></div>
+
+        <div class="home-view-content">
+            <a href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/#" id="user-menu-overlay" class="overlay"></a>
+
+            <section class="phone-only pullout-search-container theme-header-bgcolor">
+                <a id="searchBtnPhone" class="search-container-thumb" href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/#">
+                    <div class="action-icon view-sprite"></div>
+                </a>
+                <table class="search-toolbar-table phone-only">
+                    <tbody>
+                        <tr>
+                            <td class="search-container phone-only  active">
+                                <div class="search-ruler-container phone-only"><span></span></div>
+                                <input id="searchInputPhoneId" type="search" value="" class="searchInput phone-only _ctxsattr_placeholder_SearchPlaceholder _ctxsattr_aria-label_SearchPlaceholder" placeholder="搜索收藏夹" title="搜索收藏夹" aria-label="搜索收藏夹" style="">
+                                <a href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/#" class="searchClearButton _ctxsattr_aria-label_ClearSearch" aria-label="清除搜索"></a>
+                            </td>
+                            <td class="search-hide-container phone-only">
+                                <a class="searchHideButton _ctxstxt_Cancel theme-header-color" href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/#">取消</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+            <a href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/#" class="phone-only search-overlay"></a>
+
+            <header class="store-header theme-header-bgcolor">
+                <a href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/#" id="menuBtnPhone" class="side-menu-thumb phone-only">
+                    <div class="action-icon view-sprite"></div>
+                </a>
+                <div class="logo-container hdpi-capable tablet-only"></div>
+                <span class="header-title theme-header-color phone-only">收藏夹</span>
+
+                <!-- Contiguous link tags to avoid space between inline blocks -->
+                <!-- use a section to group buttons to allow easy extension. This allows -->
+                <!-- tablet-only to be on the container rather than the item -->
+                <section class="tablet-only view-buttons" role="tablist">
+                    <a id="myAppsBtn" role="tab" aria-selected="true" class="toggle-view-button myapps-view selected" href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/#">
+                        <div class="view-sprite"></div>
+                        <span class="_ctxstxt_QuickAccess theme-header-color">收藏夹</span>
+                    </a>
+                    <a id="desktopsBtn" role="tab" aria-selected="false" class="toggle-view-button desktops-view" href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/#">
+                        <div class="view-sprite"></div>
+                        <span class="_ctxstxt_Desktops theme-header-color">桌面</span>
+                    </a>
+                    <a id="allAppsBtn" role="tab" aria-selected="false" class="toggle-view-button store-view" href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/#" style="display: none;">
+                        <div class="view-sprite"></div>
+                        <span class="_ctxstxt_AllApps theme-header-color">应用程序</span>
+                    </a>
+                    <a id="tasksBtn" role="tab" aria-selected="false" class="toggle-view-button tasks-view" href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/#" style="display: none;">
+                        <div class="view-sprite"></div>
+                        <span class="_ctxstxt_Tasks theme-header-color">任务</span>
+                    </a>
+                </section>
+                <div class="headerRight tablet-only">
+                    <div class="tablet-only dropdown-menu-container user-menu">
+                        <a id="userMenuBtn" href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/#" class="dropdown-menu-trigger settings-button">
+                            <p class="theme-header-color user-display-name _ctxstxt_Menu">longhsu91</p>
+                            <div class="settings-button-arrow view-sprite"></div>
+                        </a>
+                        <div class="dropdown-menu">
+                            <div class="dropdown-menu-top"></div>
+                            <div class="dropdown-menu-body"><a id="menuActivateBtn" class="theme-highlight-color" title="激活您的桌面上安装的 Citrix Receiver" href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/ServiceRecord/GetDocument/receiverconfig.cr?CsrfToken=576BEA35F424CBD617EACC0E557799AF&amp;IsUsingHttps=Yes">激活...</a>
+                                <a id="aboutBtn" class="theme-highlight-color" aria-label="关于" href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/#">关于</a><a id="menuLogOffBtn" class="theme-highlight-color" aria-label="注销" href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/#">注销</a></div>
+                            <div class="dropdown-menu-bottom"></div>
+                        </div>
+                    </div>
+                    <a class="help-icon view-sprite" href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/#"></a>
+                </div>
+            </header>
+            <div id="pluginTop">
+                <div id="customTop"></div>
+            </div>
+
+            <nav class="toolbar store-toolbar tablet-only">
+                <!-- Contiguous link tags to avoid space between inline blocks -->
+                <a id="folderViewBackButton" class="toolbar-button theme-highlight-color _ctxsattr_aria-label_Back" href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/#" aria-label="后退" style="display: none;">
+                    <div class="backButton theme-highlight-sprite"></div>
+                </a><a id="toolbarAllAppsBtn" role="tab" aria-selected="false" class="toolbar-button theme-highlight-color theme-highlight-hover-color theme-highlight-border-color allapps-view _ctxstxt_AllAppsForToolbar" href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/#">全部</a>
+                <div class="toolbar-button-separator">
+                </div><a id="toolbarFoldersBtn" role="tab" aria-selected="false" class="toolbar-button theme-highlight-color theme-highlight-hover-color theme-highlight-border-color folder-view addBefore _ctxstxt_Categories" href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/#">类别</a>
+                <a id="searchBack" class="theme-highlight-color _ctxsattr_aria-label_Back" href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/#" aria-label="后退">
+                    <div class="backButton theme-highlight-sprite"></div>
+                </a>
+                <div class="searchInformation"></div>
+                <div class="search-container active">
+                    <div class="search-ruler-container" style="width: 159px; white-space: nowrap;"><span style="line-height: 16px;">搜索收藏夹</span></div>
+                    <input id="searchInputId" type="search" value="" class="searchInput _ctxsattr_placeholder_SearchPlaceholder _ctxsattr_aria-label_SearchPlaceholder" placeholder="搜索收藏夹" title="搜索收藏夹" aria-label="搜索收藏夹">
+                    <a href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/#" class="searchClearButton _ctxsattr_aria-label_ClearSearch" aria-label="清除搜索"></a>
+                </div>
+                <div class="breadcrumb-container" style="display: none;">
+                    <div class="breadcrumb-ruler-container"></div>
+                    <div class="breadcrumb-contents"></div>
+                </div>
+            </nav>
+
+            <section class="toolbar bundleDetail-toolbar">
+                <a id="bundleDetailBack" class="theme-highlight-color _ctxsattr_aria-label_Back" href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/#" aria-label="后退">
+                    <div class="backButton theme-highlight-sprite"></div>
+                </a>
+                <a id="bundleAddAll" class="theme-highlight-color _ctxstxt_AddAll" href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/#">全部添加</a>
+            </section>
+
+            <section class="toolbar store-toolbar-phone phone-only">
+                <div role="tablist" class="store-toolbar-phone-content">
+                    <a id="toolbarAllAppsBtnPhone" role="tab" aria-selected="false" href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/#" class="phone-toolbar-button theme-highlight-color allapps-view">
+                        <span class="_ctxstxt_AllAppsForToolbar theme-highlight-border-color">全部</span>
+                    </a>
+                    <a id="toolbarFoldersBtnPhone" role="tab" aria-selected="false" href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/#" class="phone-toolbar-button theme-highlight-color folder-view">
+                        <span class="_ctxstxt_Categories theme-highlight-border-color">类别</span>
+                    </a>
+                </div>
+                <div class="folder-toolbar-phone-content">
+                    <a id="folderViewPhoneBackButton" class="_ctxsattr_aria-label_Back" href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/#" aria-label="后退">
+                        <div class="backButton theme-highlight-sprite"></div>
+                    </a>
+                    <div class="toolbar-foldername-text"></div>
+                </div>
+
+            </section>
+
+            <section class="scrollable storeViewSection">
+                <div id="pluginScrollTop">
+                    <div id="customScrollTop"></div>
+                </div>
+                <div class="applicationBundleHeader bundleDetail">
+                    <div class="applicationBundleHeaderTitle"></div>
+                    <div class="applicationBundleHeaderText"></div>
+                    <div class="applicationBundleHeaderOverlay"></div>
+                </div>
+                <div class="applicationBundleContainer" style="display: none;">
+                    <div class="content">
+                        <div class="appBundles slick-initialized slick-slider">
+                            <div aria-live="polite" class="slick-list draggable" tabindex="0">
+                                <div class="slick-track" style="opacity: 1; width: 0px; transform: translate3d(0px, 0px, 0px);"></div>
+                            </div>
+                        </div>
+                        <a class="prevBundleOuter" href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/#">
+                            <div class="prevBundle theme-highlight-color theme-highlight-sprite"></div>
+                            <div class="prevBundle hover theme-highlight-color theme-highlight-sprite"></div>
+                        </a>
+                        <a class="nextBundleOuter" href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/#">
+                            <div class="nextBundle theme-highlight-color theme-highlight-sprite"></div>
+                            <div class="nextBundle hover theme-highlight-color theme-highlight-sprite"></div>
+                        </a>
+                    </div>
+                </div>
+                <div class="store-apps-container">
+                    <div class="store-apps-title">所有应用程序</div>
+                    <ul class="storeapp-list ui-sortable">
+                        <li class="storeapp added" data-shortid="1004">
+                            <div class="app-tile"></div>
+                            <a href="./StoreFront_files/ICADirectConnecter.ica" class="storeapp-details-link"><img class="storeapp-icon ui-sortable-handle" src="./StoreFront_files/L0NpdHJpeC9TdG9yZS9yZXNvdXJjZXMvdjIvTTNkT01VZE5Sa1YwVDBkMGEwTnJZVEkzY2xoMGJrTjJRMWRTVDFsU2RUaFdTVlZCVFdaU1ZsUmlkejAtL2ltYWdl" alt="LVDA-K8S" data-iconid="L0NpdHJpeC9TdG9yZS9yZXNvdXJjZXMvdjIvTTNkT01VZE5Sa1YwVDBkMGEwTnJZVEkzY2xoMGJrTjJRMWRTVDFsU2RUaFdTVlZCVFdaU1ZsUmlkejAtL2ltYWdl">
+                                <div class="storeapp-loading-overlay">
+                                    <div class="spinner storeapp-loading-spinner"></div>
+                                </div>
+                                <div class="storeapp-ready-overlay"></div>
+                                <div class="storeapp-details-container">
+                                    <p class="storeapp-name ui-sortable-handle">LVDA-K8S</p>
+                                    <div class="storeapp-ratings"></div>
+                                </div>
+                            </a><a href="./" class="storeapp-action-link theme-highlight-color ui-sortable-handle">详细信息</a></li>
+                    </ul>
+                </div>
+                <div class="no-results-message" style="display: none;">
+                    <div class="_ctxstxt_NoAppsFound">没有与您的搜索匹配的项目。</div>
+                    <a href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/#" class="all-app-results theme-highlight-color _ctxstxt_TrySearchingInApps">尝试在“应用程序”中搜索。</a>
+                </div>
+                <div class="no-fav-results-message">
+                    <div class="no-fav-results-message-image"></div>
+                    <div class="_ctxstxt_AddFavoritesTitle no-fav-results-message-title">添加收藏</div>
+                    <div id="no-fav-msg-desc" class="_ctxstxt_AddFavoritesDescriptionTablet no-fav-results-message-description">转至“桌面”，单击所选对象旁边的“详细信息”，然后选择“添加到收藏夹”。</div>
+                    <div id="no-fav-msg-desc-phone" class="_ctxstxt_AddFavoritesDescriptionPhone no-fav-results-message-description">在菜单下，转至“桌面”，单击所选对象旁边的“详细信息”，然后选择“添加到收藏夹”。</div>
+                </div>
+                <div class="no-updates text _ctxstxt_NoUpdates">无可用更新</div>
+                <div class="no-apps-or-desktops-message"></div>
+            </section>
+            <div class="slideAnimation"></div>
+            <div id="pluginBottom">
+                <div id="customBottom"></div>
+            </div>
+
+            <section class="toolbar appinfo-toolbar">
+                <a id="appInfoBack" class="theme-highlight-color _ctxsattr_aria-label_Back" href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/#" aria-label="后退">
+                    <div class="backButton theme-highlight-sprite"></div>
+                </a>
+            </section>
+
+            <section class="appInfoView scrollable">
+                <div class="appInfoHeader">
+                    <img class="appInfoIcon" alt="">
+                    <div class="storeapp-loading-overlay">
+                        <div class="spinner storeapp-loading-spinner"></div>
+                    </div>
+                    <div class="storeapp-ready-overlay"></div>
+                    <div class="appInfoHeaderDetails">
+                        <h1 class="appInfoName"></h1>
+                        <div class="appInfoCategoriesOrHostName"></div>
+                    </div>
+                </div>
+                <div class="appInfoActions">
+                    <!-- Contiguous link tags to avoid space between inline blocks -->
+                    <a id="appInfoOpenBtn" href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/#" class="theme-highlight-color theme-highlight-border-color appInfoActionButton _ctxstxt_Open">打开</a><a id="appInfoRestartBtn" href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/#"
+                        class="theme-highlight-color theme-highlight-border-color appInfoActionButton _ctxstxt_Restart">重新启动</a><a id="appInfoRequestButton" href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/#" class="theme-highlight-color theme-highlight-border-color appInfoActionButton _ctxstxt_Request">请求</a>
+                    <a id="appInfoCancelRequestButton" href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/#" class="theme-highlight-color theme-highlight-border-color appInfoActionButton _ctxstxt_CancelRequest">取消请求</a>
+                    <a id="appInfoAddButton" href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/#" class="theme-highlight-color theme-highlight-border-color appInfoActionButton">
+                        <div class="theme-highlight-sprite addIcon"></div><span class="_ctxstxt_AddToFavorites">添加到收藏夹</span>
+                        <div class="addIconSpacer"></div>
+                    </a>
+                    <a id="appInfoRemoveBtn" href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/#" class="theme-highlight-color theme-highlight-border-color appInfoActionButton">
+                        <div class="theme-highlight-sprite addedIcon"></div><span class="_ctxstxt_Remove">删除</span>
+                        <div class="addIconSpacer"></div>
+                    </a>
+                </div>
+                <div id="pluginInfoTop">
+                    <div id="customInfoTop"></div>
+                </div>
+                <div class="appInfoMain">
+                    <div class="truncated app-description descriptionText">
+                        <a href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/#" class="more desc-link descriptionText theme-highlight-color _ctxstxt_More">更多</a>
+                    </div>
+                    <div class="full app-description descriptionText">
+                        <a href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/#" class="less desc-link descriptionText theme-highlight-color _ctxstxt_Less">更少</a>
+                    </div>
+                    <div id="pluginInfo">
+                        <div id="customInfo"></div>
+                    </div>
+                    <div class="appInfoSocialData tabContainer">
+                        <div class="tabHeader"></div>
+                        <div class="appInfoOverviewTab tabContent">
+                            <div class="appInfoFaqDetail">
+                                <h1 class="faqHeader tabContentHeader _ctxstxt_Faq">常见问题解答</h1>
+                                <div class="faqQuestions"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <a href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/#" class="overlay" id="autoMessageOverlay" aria-hidden="true"></a>
+            <div class="transient popup" id="autoMessagePopup"></div>
+
+            <a href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/#" class="overlay" id="refresh-overlay" aria-hidden="true"></a>
+            <div class="spinner refresh-spinner _ctxsattr_aria-label_RefreshInProgress" role="alert" aria-label="正在刷新应用程序，请稍候。"></div>
+        </div>
+    </section>
+
+    <section id="logoff-screen" class="logoff-view scrollable fullscreen-pane web-screen" style="display: none;">
+        <div class="vertical-center-outer">
+            <div class="vertical-center-inner">
+                <div class="logon-small logon-logo-container"></div>
+                <div class="logoff-progress content-area">
+                    <h1 class="_ctxstxt_LoggingOff main-text">正在注销 Citrix Receiver...</h1>
+                    <div class="spinner authentication-spinner"></div>
+                </div>
+                <div class="logoff-complete content-area">
+                    <h1 class="logoff-complete-title main-text"></h1>
+                    <div class="logoff-complete-content detail-text"></div>
+                    <a href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/#" class="logon-button default button"></a>
+                    <p class="remember-logon-method detail-text">
+                        <input id="remember-logon-method-checkbox" type="checkbox" checked="checked">
+                        <label for="remember-logon-method-checkbox"></label>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="cookie-error-screen" class="cookie-error-view fullscreen-pane web-screen" style="display: none;">
+        <div class="vertical-center-outer">
+            <div class="vertical-center-inner">
+                <div class="cookie-error content-area">
+                    <h1 class="cookie-error-title main-text _ctxstxt_CookiesAreDisabledTitle">cookie 已禁用</h1>
+                    <div class="cookie-error-content detail-text _ctxstxt_CookiesAreDisabledBody">使用此版本的 Citrix Receiver 之前，请在您的浏览器中启用 cookie</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="chrome-app-origin-mismatch-screen" class="chrome-App-Origin-Mismatch fullscreen-pane web-screen" style="display: none;">
+        <div class="vertical-center-outer">
+            <div class="vertical-center-inner">
+                <div class="content-area">
+                    <div class="chrome-App-Origin-content detail-text _ctxstxt_ChromeAppOriginMismatch">请联系您的 IT 部门并提供以下信息: 必须在 StoreFront 中将 Citrix Receiver 的 ID 列入白名单。</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="explicit-auth-screen" class="explicit-auth-view scrollable x-scrollable fullscreen-pane web-screen" style="display: none;">
+        <div id="pluginExplicitAuthHeader" class="pluginAuthHeader">
+            <div id="customExplicitAuthHeader" class="customAuthHeader"></div>
+        </div>
+        <div class="vertical-center-outer">
+            <div class="vertical-center-inner">
+                <div class="logon-small logon-logo-container"></div>
+                <div class="content-area">
+                    <div id="pluginExplicitAuthTop" class="pluginAuthTop">
+                        <div id="customExplicitAuthTop" class="customAuthTop"></div>
+                    </div>
+                    <div class="logon-area">
+                        <div class="logon-spacer logon-large logon-logo-container"></div>
+                        <div class="form-content">
+                            <div class="form-container">
+                                <form class="form insertPoint credentialform" action="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/ExplicitAuth/LoginAttempt" method="POST">
+                                    <div class="field CredentialTypeusername">
+                                        <div class="left"><label for="username" class="label plain">用户名:</label></div>
+                                        <div class="right"><input name="username" id="username" type="text" placeholder="域\用户或 user@domain.com" title="域\用户或 user@domain.com" autocomplete="off" spellcheck="false" class="editedCredential" disabled="disabled"></div>
+                                    </div>
+                                    <div class="field CredentialTypepassword">
+                                        <div class="left"><label for="password" class="label plain">密码:</label></div>
+                                        <div class="right"><input name="password" id="password" type="password" autocomplete="off" spellcheck="false" class="editedCredential" disabled="disabled"></div>
+                                    </div>
+                                    <div class="field CredentialTypesavecredentials" style="display: none;">
+                                        <div class="right checkbox"><input id="saveCredentials" name="saveCredentials" type="checkbox" value="saveCredentials" disabled="disabled"><label for="saveCredentials" class="label plain">记住我的密码</label></div>
+                                    </div>
+                                    <div class="field buttonsrow">
+                                        <div class="buttonscontainer right">
+                                            <a id="loginBtn" href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/#" class="button forms-authentication-button last-child default waiting" style="width: 345px;"></a>
+                                        </div>
+                                        <div class="spinner" style="visibility: hidden"><img src="./StoreFront_files/authspinner_B0BCD339560CA593.gif" alt=""></div>
+                                    </div>
+                                    <div class="spacer"></div>
+                                </form>
+                            </div>
+                            <div class="explicit-auth-progress" style="display: none;">
+                                <h1 class="_ctxstxt_ResumingLogon main-text">正在恢复登录，请稍候。</h1>
+                                <div class="spinner authentication-spinner"></div>
+                            </div>
+                            <p class="back-to-choices" style="display: none;"><a href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/#" class="authentication-link _ctxstxt_UseAnotherLogonOption">使用其他登录选项</a></p>
+                        </div>
+                        <div class="logon-spacer"></div>
+                    </div>
+                    <div id="pluginExplicitAuthBottom" class="pluginAuthBottom">
+                        <div id="customExplicitAuthBottom" class="customAuthBottom"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="pluginExplicitAuthFooter" class="pluginAuthFooter">
+            <div id="customExplicitAuthFooter" class="customAuthFooter"></div>
+        </div>
+    </section>
+
+    <section id="authentication-screen" class="authentication-view scrollable x-scrollable fullscreen-pane web-screen" style="display: none;">
+        <div id="pluginAuthHeader" class="pluginAuthHeader">
+            <div id="customAuthHeader" class="customAuthHeader"></div>
+        </div>
+        <div class="vertical-center-outer">
+            <div class="vertical-center-inner">
+                <div class="logon-small logon-logo-container"></div>
+                <div class="content-area">
+                    <div id="pluginAuthTop" class="pluginAuthTop">
+                        <div id="customAuthTop" class="customAuthTop"></div>
+                    </div>
+                    <div class="logon-area">
+                        <div class="logon-spacer logon-large logon-logo-container"></div>
+                        <div class="authentication-content"></div>
+                        <div class="logon-spacer"></div>
+                    </div>
+                    <div id="pluginAuthBottom" class="pluginAuthBottom">
+                        <div id="customAuthBottom" class="customAuthBottom"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="pluginAuthFooter" class="pluginAuthFooter">
+            <div id="customAuthFooter" class="customAuthFooter"></div>
+        </div>
+    </section>
+
+    <section id="password-expiry-warning-screen" class="auth-password-expiry-view scrollable x-scrollable fullscreen-pane web-screen" style="display: none;">
+        <div class="vertical-center-outer">
+            <div class="vertical-center-inner">
+                <div class="logon-small logon-logo-container"></div>
+                <div class="content-area">
+                    <div class="logon-area">
+                        <div class="logon-spacer logon-large logon-logo-container"></div>
+                        <div class="authentication-content" role="alertdialog" aria-describedby="changePasswordHeader">
+                            <h1 class="authentication-title main-text _ctxstxt_PasswordExpiryTitle" id="changePasswordHeader">是否要更改您的密码?</h1>
+                            <p class="authentication-message detail-text"></p>
+                            <div class="buttonscontainer">
+                                <a href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/#" id="btnPasswordChange" class="default stacked button _ctxstxt_PasswordExpiryChange">立即更改</a>
+                                <a href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/#" id="btnPasswordContinue" class="stacked button _ctxstxt_PasswordExpiryChangeLater">暂不更改</a>
+                            </div>
+                        </div>
+                        <div class="logon-spacer"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <a href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/#" class="messagebox overlay" id="genericMessageBoxOverlay" aria-hidden="true"></a>
+    <div class="popup messageBoxPopup" id="genericMessageBoxPopup" role="alertdialog" aria-describedby="messageBoxTitle">
+        <div class="messageBoxContent">
+            <h1 class="messageBoxTitle"></h1>
+            <p class="messageBoxText"></p>
+        </div>
+        <div class="messageBoxAction">
+            <a href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/#" class="dialog button"></a>
+        </div>
+        <div class="messageBoxCancelAction">
+            <a href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/#" class="dialog button"></a>
+        </div>
+    </div>
+
+    <div class="popup aboutBox" id="aboutBoxPopup" role="alertdialog" aria-describedby="aboutBoxHeader">
+        <a href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/#" id="aboutBoxCloseBtn" class="aboutBoxCloseBtn _ctxsattr_aria-label_Close" aria-label="关闭"></a>
+        <div class="citrixReceiverLogoAboutBox"></div>
+        <p id="aboutBoxHeader" class="thirdPartyNoticeHeader _ctxstxt_ThirdPartyNotices">第三方声明</p>
+        <a id="thirdPartyNoticesBtn" href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/ReceiverThirdPartyNotices.htm" class="thirdPartyNoticeLink _ctxstxt_ThirdPartyNoticesWeb" target="_blank">Citrix Receiver for Web</a>
+        <a id="html5ThirdPartyNoticesBtn" href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/clients/HTML5Client/src/ReceiverThirdPartyNotices.html" class="thirdPartyNoticeLink _ctxstxt_ThirdPartyNoticesHtml5" target="_blank">Citrix Receiver for HTML5</a><br>
+        <span class="citrixCopyright _ctxstxt_CitrixCopyright">© 2017 Citrix Systems, Inc.</span><br>
+        <span class="_ctxstxt_AllRightsReserved">保留所有权利。</span><br>
+        <a href="http://www.citrix.com/" class="citrixLink" target="_blank">www.citrix.com</a>
+    </div>
+    <a href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/#" class="messagebox overlay" id="genericDialogBoxOverlay" aria-hidden="true"></a>
+    <div class="popup dialogBox" id="genericDialogBox" role="alertdialog"></div>
+
+    <section id="plugin-activation" class="fullscreen-pane scrollable web-screen" style="display: none;">
+        <div class="vertical-center-outer">
+            <div class="vertical-center-inner">
+                <div class="activate-plugin-content detail-text content-area" role="alertdialog" aria-live="polite">
+                </div>
+            </div>
+        </div>
+    </section>
+    <section id="plugin-assistance-download" class="fullscreen-pane scrollable web-screen" style="display: none;">
+        <div class="vertical-center-outer">
+            <div class="vertical-center-inner">
+                <div class="download-plugin content-area">
+                    <h1 class="_ctxstxt_ClickInstall plugin-assistant-header main-text">安装 Citrix Receiver 以访问您的应用程序</h1>
+                    <div class="actions">
+                        <p class="pluginassistant-details">
+                            <input id="legalstatement-checkbox1" class="legalstatement-checkbox" type="checkbox">
+                            <label class="legalstatement-label" for="legalstatement-checkbox1">
+                                <span class="detail-text _ctxstxt_IAgreeWith">我同意</span>
+                                <a class="licenseagreement-link web-screen-link _ctxstxt_CitrixLicenseAgreement" href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/#" role="link">Citrix 许可协议</a>
+                            </label>
+                        </p>
+                        <p>
+                            <a href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/#" class="installbutton default button disabled action-with-long-tooltip _ctxstxt_Install">安装</a>
+                        </p>
+                    </div>
+                    <div class="footer">
+                        <a class="securitydetailslink web-screen-link _ctxstxt_SecurityDetails" href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/#" role="link">安全详细信息</a><span class="bar-separator">|</span><a class="pluginassistant-skiplink web-screen-link _ctxstxt_SkipToLogon _ctxsattr_title_SkipToLogonTip"
+                            href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/#" title="单击此处跳至登录页面">登录</a>
+                    </div>
+                    <div class="acceptterms-popup pluginassistant-popup">
+                        <div class="_ctxstxt_AcceptTermsMessage" role="alertdialog">请先接受许可协议的条款，然后再安装 Citrix Receiver。</div>
+                    </div>
+                    <div class="securitydetails-popup pluginassistant-popup" role="alertdialog">
+                        <h3 class="_ctxstxt_SecurityInformationTitle">安全信息</h3>
+                        <p class="_ctxstxt_SecurityInformationText">无论何时从 Internet 下载文件，始终存在包含安全威胁(病毒或程序，可能会破坏您的计算机或计算机中存储的数据)的风险。要检查文件是否存在安全威胁，请单击“安装”，然后将该文件保存到计算机上恰当的位置。使用最新的防病毒程序扫描该文件，并执行贵公司的安全策略所要求的任何其他检查，然后再运行/安装该文件。可能需要在您的计算机上重新配置安全设置，才能安装或运行该文件。</p>
+                    </div>
+                    <div class="licenseagreement-popup pluginassistant-popup _ctxstxt_LicenseAgreementContent" role="alertdialog">
+                        <h3 class="_ctxstxt_LicenseAgreementContentTitle">CITRIX(R) 许可协议</h3>
+                        <p class="_ctxstxt_LicenseAgreementContentText">使用此组件时应遵守与其共同使用的 Citrix 产品或服务的 Citrix 许可协议。仅许可将此组件与此类 Citrix 产品或服务共同使用。</p>
+                        <p class="_ctxstxt_LicenseAgreementContentCode">CTX_code: EP_T_A124358</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section id="plugin-assistance-download-unavailable" class="fullscreen-pane scrollable web-screen" style="display: none;">
+        <div class="vertical-center-outer">
+            <div class="vertical-center-inner">
+                <div id="plugin-download-unavailable" class="content-area">
+                    <h1 class="main-text _ctxstxt_SoftwareNotDetected">未检测到软件</h1>
+                    <div class="content">
+                        <p class="detail-text _ctxstxt_SoftwareNotDetectedDetails">在您的计算机上检测不到 Citrix Receiver。如果您知晓 Citrix Receiver 已安装，请单击“继续”。如需帮助，请与技术支持人员联系。</p>
+                        <a href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/#" class="pluginassistant-skiplink default button _ctxstxt_Continue">继续</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section id="plugin-assistance-polling" class="fullscreen-pane scrollable web-screen" style="display: none;">
+        <div class="vertical-center-outer">
+            <div class="vertical-center-inner">
+                <div class="polling-plugin content-area">
+                    <h1 class="_ctxstxt_ConfirmInstallationIsComplete plugin-assistant-header main-text">确认安装已完成</h1>
+                    <div class="content">
+                        <p class="detail-text _ctxstxt_InstallationBegins">正在开始下载过程，请稍候。</p>
+                        <p class="detail-text">
+                            <span class="_ctxstxt_OnceComplete">安装 Citrix Receiver 后， </span><span class="_ctxstxt_ClickContinue">单击<strong>继续</strong>。</span>
+                        </p>
+                    </div>
+                    <div class="actions">
+                        <a href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/#" class="skip-polling-wait default button _ctxstxt_Continue">继续</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section id="plugin-assistance-polling-ie-upgrade" class="fullscreen-pane scrollable web-screen" style="display: none;">
+        <div class="vertical-center-outer">
+            <div class="vertical-center-inner">
+                <div class="polling-plugin-ie content-area">
+                    <h1 class="main-text _ctxstxt_UpgradeInProgress plugin-assistant-header">正在升级 Citrix Receiver 软件...</h1>
+                    <div class="content">
+                        <p class="polling-plugin-installmessage detail-text _ctxstxt_UpgradeCloseBrowser">安装过程中，系统可能会要求您关闭浏览器。</p>
+                    </div>
+                    <div class="actions">
+                        <a class="securitydetailslink _ctxstxt_SecurityDetails web-screen-link" href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/#" role="link">安全详细信息</a><span class="bar-separator">|</span><a class="skip-polling-wait web-screen-link _ctxstxt_UpgradeLater _ctxsattr_title_UpgradeLaterTip"
+                            href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/#" title="单击此处继续操作但不升级 Citrix Receiver">稍后升级</a>
+                    </div>
+                    <div class="securitydetails-popup-ie pluginassistant-popup" role="alertdialog">
+                        <h3 class="_ctxstxt_SecurityInformationTitle">安全信息</h3>
+                        <p class="_ctxstxt_InfoBarSecurityInformation">允许运行 ActiveX 控件将在您的计算机上安装软件。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="protocolhandler-welcome" class="fullscreen-pane scrollable web-screen" style="display: none;">
+        <div class="vertical-center-outer">
+            <div class="vertical-center-inner">
+                <div class="welcome-container content-area">
+                    <div class="box-links detection-right-links">
+                        <h1 class="_ctxstxt_WelcomeToReceiver main-text">欢迎使用 Citrix Receiver</h1>
+                        <p class="welcome-for-full-experience detail-text">使用 Citrix Receiver 访问您的应用程序和桌面。</p>
+                        <a id="protocolhandler-welcome-installButton" class="welcome-use-native-client default button _ctxstxt_DetectReceiver" href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/#">检测 Receiver</a>
+                        <div class="footer" style="display: none;">
+                            <p class="welcome-use-light-text detail-text _ctxstxt_YouCanUseLightVersion">如果不希望检测/安装 Citrix Receiver，可以在您的浏览器中使用功能较少的简易版本。</p>
+                            <a id="protocolhandler-welcome-useLightVersionLink" class="welcome-use-light-link web-screen-link _ctxstxt_UseLightVersion" href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/#">使用简易版本</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="protocolhandler-detect" class="fullscreen-pane scrollable web-screen" style="display: none;">
+        <div class="vertical-center-outer">
+            <div class="vertical-center-inner">
+                <div class="detect-container content-area">
+                    <div class="box-links detection-right-links">
+                        <h1 class="detect-heading main-text">请先接受许可协议的条款，然后再安装 Citrix Receiver。</h1>
+                        <p class="detect-if-already-installed detail-text" style="display: none;">如果检测到 Citrix Receiver，您将在几秒钟内看到一个窗口。请选择“<span class="detail-text-highlight">启动应用程序</span>”。</p>
+                        <p class="detect-no-prompt detail-text" style="display: none;">如果未显示窗口，请继续下载。</p>
+                        <p class="pluginassistant-details">
+                            <input id="legalstatement-checkbox2" class="legalstatement-checkbox" type="checkbox">
+                            <label class="legalstatement-label" for="legalstatement-checkbox2">
+                                <span class="detail-text _ctxstxt_IAgreeWith">我同意</span>
+                                <a class="licenseagreement-link web-screen-link _ctxstxt_CitrixLicenseAgreement" href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/#" role="link">Citrix 许可协议</a>
+                            </label>
+                        </p>
+                        <a id="protocolhandler-detect-downloadButton" class="installbutton default button disabled _ctxstxt_Download" href="http://downloadplugins.citrix.com/Windows/CitrixReceiverWeb.exe">下载</a>
+                        <div class="footer">
+                            <a id="protocolhandler-detect-detectAgainLink" class="detect-retry-detection web-screen-link _ctxstxt_DetectAgain" href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/#" style="display: none;">重新检测</a>
+                            <span class="detect-retry-detection-separator bar-separator" style="display: none;">|</span>
+                            <a id="protocolhandler-detect-useLightVersionLink" class="detect-use-light-version web-screen-link _ctxstxt_UseLightVersion" href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/#" style="display: none;">使用简易版本</a>
+                            <span class="detect-use-light-version-separator bar-separator" style="display: none;">|</span>
+                            <a id="protocolhandler-detect-alreadyInstalledLink" class="detect-already-installed web-screen-link _ctxstxt_AlreadyInstalled" href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/#">已安装</a>
+                            <span class="detect-already-installed-separator bar-separator">|</span>
+                            <a class="securitydetailslink web-screen-link _ctxstxt_SecurityDetails" href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/#" role="link">安全详细信息</a>
+                        </div>
+                        <div class="acceptterms-popup pluginassistant-popup" style="display: none;">
+                            <div class="_ctxstxt_AcceptTermsMessage" role="alertdialog">请先接受许可协议的条款，然后再安装 Citrix Receiver。</div>
+                        </div>
+                        <div class="securitydetails-popup pluginassistant-popup" role="alertdialog" style="display: none;">
+                            <h3 class="_ctxstxt_SecurityInformationTitle">安全信息</h3>
+                            <p class="_ctxstxt_SecurityInformationText">无论何时从 Internet 下载文件，始终存在包含安全威胁(病毒或程序，可能会破坏您的计算机或计算机中存储的数据)的风险。要检查文件是否存在安全威胁，请单击“安装”，然后将该文件保存到计算机上恰当的位置。使用最新的防病毒程序扫描该文件，并执行贵公司的安全策略所要求的任何其他检查，然后再运行/安装该文件。可能需要在您的计算机上重新配置安全设置，才能安装或运行该文件。</p>
+                        </div>
+                        <div class="licenseagreement-popup pluginassistant-popup _ctxstxt_LicenseAgreementContent" role="alertdialog" style="display: none;">
+                            <h3 class="_ctxstxt_LicenseAgreementContentTitle">CITRIX(R) 许可协议</h3>
+                            <p class="_ctxstxt_LicenseAgreementContentText">使用此组件时应遵守与其共同使用的 Citrix 产品或服务的 Citrix 许可协议。仅许可将此组件与此类 Citrix 产品或服务共同使用。</p>
+                            <p class="_ctxstxt_LicenseAgreementContentCode">CTX_code: EP_T_A124358</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="protocolhandler-download" class="fullscreen-pane scrollable web-screen" style="display: none;">
+        <div class="vertical-center-outer">
+            <div class="vertical-center-inner">
+                <div class="download-container content-area">
+                    <div class="box-links detection-right-links">
+                        <h1 class="main-text _ctxstxt_DownloadingReceiver">正在下载 Citrix Receiver...</h1>
+                        <p class="download-install-receiver detail-text">下载完成时在您的计算机上安装 Citrix Receiver。安装 Citrix Receiver 后，请返回此处并单击“<span class="detail-text-highlight">继续</span>”。</p>
+                        <a class="download-complete default button _ctxstxt_Continue" href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/#">继续</a>
+                        <div class="footer">
+                            <a id="protocolhandler-download-retryLink" class="download-retry web-screen-link _ctxstxt_RetryDownload" href="http://downloadplugins.citrix.com/Windows/CitrixReceiverWeb.exe">重试下载</a>
+                            <span class="download-retry-separator bar-separator" style="display: none;">|</span>
+                            <a id="protocolhandler-download-useLightVersionLink" class="download-use-light-version web-screen-link _ctxstxt_UseLightVersion" href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/#" style="display: none;">使用简易版本</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="protocolhandler-validate" class="fullscreen-pane scrollable web-screen" style="display: none;">
+        <div class="vertical-center-outer">
+            <div class="vertical-center-inner">
+                <div class="validate-container content-area">
+                    <div class="box-links detection-right-links">
+                        <h1 class="main-text _ctxstxt_WaitWhileConfirmInstall">我们正在确认 Citrix Receiver 是否已安装，请稍候...</h1>
+                        <p class="validate-was-installed detail-text">如果 Citrix Receiver 已成功安装，您的浏览器将在几秒后显示一个窗口。请选择“<span class="detail-text-highlight">启动应用程序</span>”。</p>
+                        <p class="validate-no-window detail-text">如果未显示窗口，请单击“<span class="detail-text-highlight">重新检测</span>”。</p>
+                        <div class="footer">
+                            <a id="protocolhandler-validate-detectAgainLink" class="validate-retry-detection web-screen-link _ctxstxt_DetectAgain" href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/#">重新检测</a>
+                            <span class="bar-separator">|</span>
+                            <a id="protocolhandler-validate-downloadAgainLink" class="validate-retry-download web-screen-link _ctxstxt_DownloadAgain" href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/#">重新下载</a>
+                            <span class="validate-retry-download-separator bar-separator">|</span>
+                            <a id="protocolhandler-validate-useLightVersionLink" class="validate-use-light-version web-screen-link _ctxstxt_UseLightVersion" href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/#" style="display: none;">使用简易版本</a>
+                            <span class="validate-use-light-version-separator bar-separator" style="display: none;">|</span>
+                            <a id="protocolhandler-validate-alreadyInstalledLink" class="validate-already-installed web-screen-link _ctxstxt_AlreadyInstalled" href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/#">已安装</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="change-client-screen" class="fullscreen-pane scrollable web-screen" style="display: none;">
+        <div class="vertical-center-outer">
+            <div class="vertical-center-inner">
+                <div class="changeclient-container content-area">
+                    <div class="box-links detection-right-links">
+                        <h1 class="changeclient-heading main-text"></h1>
+                        <p class="changeclient-currently-using detail-text"></p>
+                        <div class="footer">
+                            <a id="changeclient-use-light-version" class="changeclient-use-light-version web-screen-link _ctxstxt_UseLightVersion" href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/#">使用简易版本</a>
+                            <span class="changeclient-use-light-version-separator bar-separator">|</span>
+                            <a id="changeclient-use-full-version" class="changeclient-use-full-version web-screen-link _ctxstxt_UseFullVersion" href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/#">使用完整版本</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="protocolhandler-checkupgrade" class="fullscreen-pane scrollable web-screen" style="display: none;">
+        <div class="vertical-center-outer">
+            <div class="vertical-center-inner">
+                <div class="checkupgrade-container content-area">
+                    <div class="box-links detection-right-links">
+                        <h1 class="_ctxstxt_CheckForUpgrade main-text">是否要检查 Citrix Receiver 的升级?</h1>
+                        <a id="checkUpgrade-CheckButton" class="installbutton default button _ctxstxt_Check" href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/#">检查</a>
+                        <div class="footer">
+                            <a id="checkUpgrade-UpgradeLaterLink" class="checkupgrade-upgrade-later web-screen-link _ctxstxt_UpgradeLater" href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/#" title="单击此处继续操作但不升级 Citrix Receiver">稍后升级</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="protocolhandler-detectupgrade" class="fullscreen-pane scrollable web-screen" style="display: none;">
+        <div class="vertical-center-outer">
+            <div class="vertical-center-inner">
+                <div class="detectupgrade-container content-area">
+                    <div class="box-links detection-right-links">
+                        <h1 class="_ctxstxt_CheckingForUpgrade main-text">我们当前正在检查升级。</h1>
+                        <p class="windowAppearsMessage detail-text">出现一个窗口时，选择“启动应用程序”。</p>
+                        <p class="detectupgrade-continue-message detail-text">如果未显示窗口，请单击“<span class="detail-text-highlight">继续</span>”。</p>
+                        <a id="detectUpgrade-ContinueButton" class="installbutton default button _ctxstxt_Continue" href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/#">继续</a>
+                        <div class="footer">
+                            <a id="detectUpgrade-DetectAgainLink" class="detectupgrade-detect-again web-screen-link _ctxstxt_DetectAgain" href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/#">重新检测</a>
+                            <span class="bar-separator">|</span>
+                            <a id="detectUpgrade-UpgradeLaterLink" class="detectupgrade-upgrade-later web-screen-link _ctxstxt_UpgradeLater" href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/#" title="单击此处继续操作但不升级 Citrix Receiver">稍后升级</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="protocolhandler-upgradeavailable" class="fullscreen-pane scrollable web-screen" style="display: none;">
+        <div class="vertical-center-outer">
+            <div class="vertical-center-inner">
+                <div class="upgradeavailable-container content-area">
+                    <div class="box-links detection-right-links">
+                        <h1 class="_ctxstxt_ProtocolHandlerUpgradeAvailable main-text">Citrix Receiver 的升级可用。是否要下载并安装该升级?</h1>
+                        <p class="pluginassistant-details">
+                            <input id="legalstatement-upgrade-checkbox" class="legalstatement-checkbox" type="checkbox">
+                            <label class="legalstatement-label" for="legalstatement-upgrade-checkbox">
+                                <span class="detail-text _ctxstxt_IAgreeWith">我同意</span>
+                                <a class="licenseagreement-link web-screen-link _ctxstxt_CitrixLicenseAgreement" href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/#" role="link">Citrix 许可协议</a>
+                            </label>
+                        </p>
+                        <a id="upgradeAvailable-DownloadButton" class="installbutton default button disabled _ctxstxt_Download" href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/#">下载</a>
+                        <div class="footer">
+                            <a class="securitydetailslink web-screen-link _ctxstxt_SecurityDetails" href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/#" role="link">安全详细信息</a>
+                            <span class="bar-separator">|</span>
+                            <a id="upgradeAvailable-UpgradeLaterLink" class="upgradeavailable-upgrade-later web-screen-link _ctxstxt_UpgradeLater" href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/#" title="单击此处继续操作但不升级 Citrix Receiver">稍后升级</a>
+                            <a id="upgradeAvailable-UseLightVersionLink" class="upgradeavailable-use-light-version web-screen-link _ctxstxt_UseLightVersion" href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/#">使用简易版本</a>
+                            <span class="upgradeavailable-already-installed-separator bar-separator">|</span>
+                            <a id="upgradeAvailable-AlreadyInstalledLink" class="upgradeavailable-already-installed web-screen-link _ctxstxt_AlreadyInstalled" href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/#">已安装</a>
+                        </div>
+                        <div class="acceptterms-popup pluginassistant-popup" style="display: none;">
+                            <div class="_ctxstxt_AcceptTermsMessage" role="alertdialog">请先接受许可协议的条款，然后再安装 Citrix Receiver。</div>
+                        </div>
+                        <div class="securitydetails-popup pluginassistant-popup" role="alertdialog" style="display: none;">
+                            <h3 class="_ctxstxt_SecurityInformationTitle">安全信息</h3>
+                            <p class="_ctxstxt_SecurityInformationText">无论何时从 Internet 下载文件，始终存在包含安全威胁(病毒或程序，可能会破坏您的计算机或计算机中存储的数据)的风险。要检查文件是否存在安全威胁，请单击“安装”，然后将该文件保存到计算机上恰当的位置。使用最新的防病毒程序扫描该文件，并执行贵公司的安全策略所要求的任何其他检查，然后再运行/安装该文件。可能需要在您的计算机上重新配置安全设置，才能安装或运行该文件。</p>
+                        </div>
+                        <div class="licenseagreement-popup pluginassistant-popup _ctxstxt_LicenseAgreementContent" role="alertdialog" style="display: none;">
+                            <h3 class="_ctxstxt_LicenseAgreementContentTitle">CITRIX(R) 许可协议</h3>
+                            <p class="_ctxstxt_LicenseAgreementContentText">使用此组件时应遵守与其共同使用的 Citrix 产品或服务的 Citrix 许可协议。仅许可将此组件与此类 Citrix 产品或服务共同使用。</p>
+                            <p class="_ctxstxt_LicenseAgreementContentCode">CTX_code: EP_T_A124358</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="protocolhandler-noupgrades" class="fullscreen-pane scrollable web-screen" style="display: none;">
+        <div class="vertical-center-outer">
+            <div class="vertical-center-inner">
+                <div class="noupgrades-container content-area">
+                    <div class="box-links detection-right-links">
+                        <h1 class="_ctxstxt_NoUpgradesAvailable main-text">Citrix Receive 的升级都不可用。</h1>
+                        <a id="noUpgradesAvailable-ContinueButton" class="installbutton default button _ctxstxt_Continue" href="https://ctx-ddc.ctxdev.local/Citrix/StoreWeb/#">继续</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="myapps-ruler-container" style="width: 140px; white-space: normal;"><span style="line-height: 19px;">LVDA-K8S</span></div>
+    <div class="ruler-container"><span></span></div>
+    <div class="folder-ruler-container"><span></span></div>
+    <div class="appinfo-ruler-container appInfoHeaderDetails" style="width: 1128px; white-space: normal;"><span style="line-height: 29px;"></span></div>
+
+    <canvas style="display:none;" id="scratchcanvas16" width="16" height="16"></canvas>
+    <canvas style="display:none;" id="scratchcanvas32" width="32" height="32"></canvas>
+    <canvas style="display:none;" id="scratchcanvas48" width="48" height="48"></canvas>
+    <div id="hiddeniframes">
+        <iframe id="protocolhandler-invoker" src="./StoreFront_files/saved_resource.html"></iframe>
+        <div id="wizard-plugindetection">
+            <!--For the wizard-->
+        </div>
+    </div>
+    <div id="ica-download-container"></div>
+
+
+    <script src="./StoreFront_files/jquery-1.12.4.min_618538B4AB9639D4.js.下载"></script>
+    <script src="./StoreFront_files/jquery-ui-v1.11.4.min_17D0B6DEFA33B91A.js.下载"></script>
+    <script src="./StoreFront_files/jquery.ui.touch-punch.min_94EA8262E7FD35F4.js.下载"></script>
+    <!--[if gte IE 9]-->
+    <script src="./StoreFront_files/hammer.v2.0.8.min_F699A1E56189259A.js.下载"></script>
+    <!--[endif]-->
+    <script src="./StoreFront_files/jquery.dotdotdot.min_08EE54CBA886AD0A.js.下载"></script>
+    <script src="./StoreFront_files/velocity.min_B218502A82F66680.js.下载"></script>
+    <script src="./StoreFront_files/slick.min_FEB62CC230E2BA2A.js.下载"></script>
+
+
+
+    <script src="./StoreFront_files/ctxs.core.min_900088653FB1ECF3.js.下载"></script>
+    <script src="./StoreFront_files/ctxs.webui.min_755ABF71C5F4DE56.js.下载"></script>
+
+    <script type="text/javascript" id="customScript">
+        var query = window.location.search + window.location.hash;
+
+        if (query.indexOf('-nocustom') == -1) {
+            document.write('<script src="custom/script.js"></scri' + 'pt>');
+            document.write('<script src="custom/strings.en.js"></scri' + 'pt>');
+        }
+    </script>
+    <script src="./StoreFront_files/script.js.下载"></script>
+    <script src="./StoreFront_files/strings.en.js.下载"></script>
+
+
+
+    <div class="theme-highlight-color">
+        <div></div>
+    </div>
+    <style type="text/css">
+        .theme-highlight-border-color {
+            border-color: rgb(2, 161, 193);
+        }
+        
+        .theme-highlight-hover-color:hover {
+            color: rgb(2, 161, 193);
+        }
+    </style>
+</body>
+
+</html>
