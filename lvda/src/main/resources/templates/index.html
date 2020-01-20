@@ -16,11 +16,12 @@
     <link rel="stylesheet" type="text/css" href="css/main.css">
 
     <!--图标-->
-    <link rel="stylesheet" href="/css/common.css">
+    <link rel="stylesheet" href="css/common.css">
+
+    <script src="scripts/main.js" defer></script>
 </head>
 
 <body>
-
     <div class="login">
         <div class="container-login100">
             <div class="wrap-login100">
@@ -34,38 +35,36 @@
                     </span>
 
                     <div class="wrap-input100 validate-input">
-                        <input class="input100" type="text" name="email" placeholder="邮箱">
-                        <span class="focus-input100"></span>
-                        <span class="symbol-input100">
-                            <i class="fa fa-envelope" aria-hidden="true"></i>
+                        <input class="input100" type="text" name="email" placeholder="账户">
+                        <span class="focus-input100 "></span>
+                        <span class="symbol-input100 ">
+                            <i class="fa fa-envelope " aria-hidden="true "></i>
                         </span>
                     </div>
 
-                    <div class="wrap-input100 validate-input">
-                        <input class="input100" type="password" name="pass" placeholder="密码">
-                        <span class="focus-input100"></span>
-                        <span class="symbol-input100">
-                            <i class="fa fa-lock" aria-hidden="true"></i>
+                    <div class="wrap-input100 validate-input ">
+                        <input class="input100 " type="password" name="pass" placeholder="密码">
+                        <span class="focus-input100 "></span>
+                        <span class="symbol-input100 ">
+                            <i class="fa fa-lock " aria-hidden="true "></i>
                         </span>
                     </div>
 
-                    <div class="container-login100-form-btn">
-                        <button class="login100-form-btn">
+                    <div class="container-login100-form-btn ">
+                        <button class="login100-form-btn ">
                             登陆
                         </button>
                     </div>
 
-                    <div class="text-center p-t-12">
-                        <a class="txt2" href="javascript:">
+                    <div class="text-center p-t-12 ">
+                        <a class="txt2 " href="javascript: ">
                             忘记密码？
                         </a>
                     </div>
 
-                    <dd><a img src="/img/github.png" target="_blank" href="http://127.0.0.1:8443/oauth/render/github">github</a></dd>
-
-                    <div class="layui-input-inline">
-                        <div class="layui-form-mid layui-word-aux layui-login-tips">第三方账号登录: </div>
-                        <img src="/img/github.png" onclick=" oauth2_github() " class="layui-login-oauth-icon " title="Github 登录 ">
+                    <div class="layui-input-inline ">
+                        <div class="layui-form-mid layui-word-aux layui-login-tips ">第三方账号登录: </div>
+                        <img id="githubImgId" class="layui-login-oauth-icon " src="img/github.png" title="Github 登录 ">
                     </div>
 
                     <div class="text-center p-t-136 ">
@@ -78,7 +77,6 @@
             </div>
         </div>
     </div>
-
 
 </body>
 
